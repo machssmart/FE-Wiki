@@ -1,0 +1,14 @@
+{
+  "name": "fe-wiki",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Starte FE-Wiki...' && echo 'Web: http://localhost:3000' && echo 'API: http://localhost:3001'",
+    "install-all": "npm install",
+    "setup": "echo 'FE-Wiki Setup abgeschlossen!'"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

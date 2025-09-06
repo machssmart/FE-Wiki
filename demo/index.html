@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FE-Wiki - Fockenbrock Elektrotechnik</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            text-align: center; 
+            max-width: 1000px; 
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        h1 { font-size: 3rem; margin-bottom: 1rem; }
+        h2 { font-size: 1.5rem; margin-bottom: 2rem; opacity: 0.9; }
+        .status { 
+            background: rgba(0,255,0,0.2); 
+            padding: 1rem; 
+            border-radius: 10px; 
+            margin: 1rem 0;
+            border: 1px solid rgba(0,255,0,0.3);
+        }
+        .api-test {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .template-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        button {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        button:hover { background: rgba(255,255,255,0.3); }
+        pre { 
+            background: rgba(0,0,0,0.3); 
+            padding: 1rem; 
+            border-radius: 5px; 
+            text-align: left; 
+            overflow-x: auto;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ FE-Wiki</h1>
+        <h2>Fockenbrock Elektrotechnik</h2>
+        
+        <div class="status">
+            <h3>✅ System Status</h3>
+            <p><strong>Frontend:</strong> Demo läuft</p>
+            <p><strong>Backend API:</strong> <span id="api-status">Teste...</span></p>
+            <p><strong>Database:</strong> In-Memory (Demo)</p>
+        </div>
+
+        <div class="api-test">
+            <h3>🔧 Live API Test</h3>
+            <button onclick="testWiki()">Wiki-Artikel laden</button>
+            <button onclick="testTemplates()">Templates laden</button>
+            <button onclick="testStats()">Statistiken laden</button>
+            <div id="api-result"></div>
+        </div>
+
+        <div class="template-grid" id="templates-grid">
+            <!-- Templates werden hier geladen -->
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 10px;">
+            <h3>🚀 Nächste Schritte</h3>
+            <p><strong>✅ Backend API:</strong> http://localhost:3001</p>
+            <p><strong>🔄 Frontend:</strong> Next.js wird installiert...</p>
+            <p><strong>📋 Features:</strong> Login, Wiki-Editor, Elektro-Formulare</p>
+        </div>
+    </div>
+
+    <script>
+        // API Status testen
+        async function checkApiStatus() {
+            try {
+                const response = await fetch('http://localhost:3001/');
+                if (response.ok) {
+                    document.getElementById('api-status').textContent = '✅ Läuft (Port 3001)';
+                    document.getElementById('api-status').style.color = '#90EE90';
+                    loadTemplatesPreview();
+                } else {
+                    document.getElementById('api-status').textContent = '❌ Nicht erreichbar';
+                    document.getElementById('api-status').style.color = '#FFB6C1';
+                }
+            } catch (error) {
+                document.getElementById('api-status').textContent = '❌ Offline';
+                document.getElementById('api-status').style.color = '#FFB6C1';
+            }
+        }
+
+        async function testWiki() {
+            try {
+                const response = await fetch('http://localhost:3001/api/wiki');
+                const data = await response.json();
+                document.getElementById('api-result').innerHTML = 
+                    `<h4>Wiki-Artikel (${data.count}):</h4><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('api-result').innerHTML = 
+                    `<p style="color: #FFB6C1;">❌ Fehler: ${error.message}</p>`;
+            }
+        }
+
+        async function testTemplates() {
+            try {
+                const response = await fetch('http://localhost:3001/api/templates');
+                const data = await response.json();
+                document.getElementById('api-result').innerHTML = 
+                    `<h4>Elektrotechnik-Templates (${data.count}):</h4><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('api-result').innerHTML = 
+                    `<p style="color: #FFB6C1;">❌ Fehler: ${error.message}</p>`;
+            }
+        }
+
+        async function testStats() {
+            try {
+                const response = await fetch('http://localhost:3001/api/stats');
+                const data = await response.json();
+                document.getElementById('api-result').innerHTML = 
+                    `<h4>System-Statistiken:</h4><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('api-result').innerHTML = 
+                    `<p style="color: #FFB6C1;">❌ Fehler: ${error.message}</p>`;
+            }
+        }
+
+        async function loadTemplatesPreview() {
+            try {
+                const response = await fetch('http://localhost:3001/api/templates');
+                const data = await response.json();
+                
+                const grid = document.getElementById('templates-grid');
+                grid.innerHTML = '<h3>🔧 Verfügbare Elektrotechnik-Templates</h3>';
+                
+                data.templates.forEach(template => {
+                    const card = document.createElement('div');
+                    card.className = 'template-card';
+                    card.innerHTML = `
+                        <h4>${template.icon} ${template.name}</h4>
+                        <p><strong>Kategorie:</strong> ${template.category}</p>
+                        <p>${template.description}</p>
+                        <p><strong>Felder:</strong> ${template.fields.length}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.log('Templates konnten nicht geladen werden:', error);
+            }
+        }
+
+        // Beim Laden der Seite API-Status prüfen
+        window.onload = checkApiStatus;
+    </script>
+</body>
+</html>
